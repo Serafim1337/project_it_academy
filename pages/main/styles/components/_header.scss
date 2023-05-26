@@ -1,0 +1,42 @@
+.header {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  height: 10vh;
+}
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 0 30px;
+}
+
+.logo-block {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+
+  .logo {
+    width: 70px;
+  }
+}
+
+.nav-block {
+  .nav-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 30px;
+
+    .nav-item {
+    }
+
+    .nav-link {
+      color: $orange;
+      font-family: exo-reg;
+      font-size: 30px;
+    }
+  }
+}

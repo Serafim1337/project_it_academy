@@ -1,8 +1,5 @@
-$dirtyGreen: #8DB1AB;
-$blue: #456990;
-
 .letters-container {
-  background-color: $dirtyGreen;
+  background-color: transparent;
   overflow: hidden;
   position: absolute;
   width: 100%;
@@ -12,8 +9,8 @@ $blue: #456990;
 }
 
 .falling-letter {
-  color: $blue;
-  font-family: 'Kanit', sans-serif;
+  color: $yellow;
+  font-family: exo-bold;
   text-transform: uppercase;
   font-size: 6em;
   margin: 10px;

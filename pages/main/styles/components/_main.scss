@@ -1,0 +1,38 @@
+.main {
+  height: 100vh;
+}
+
+.menu-section {
+  padding: 30vh 30px 0 30px;
+  position: relative;
+}
+
+.menu-container {
+  background-color: $orange;
+  height: 60vh;
+  width: 100%;
+  border-radius: 30px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.words-block,
+.page-block {
+  background-color: $yellow;
+  border-radius: 30px;
+  height: fit-content;
+  padding: 30px;
+  position: relative;
+  z-index: 1;
+  width: 300px;
+  text-align: center;
+}
+
+.block-description {
+  background-color: $light-white;
+  opacity: 0.5;
+  position: absolute;
+  border-radius: 30px;
+  transition: top 1s ease-in-out;
+}
