@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Type Speed Test</title>
-    <link rel="stylesheet" href="../main/styles/style.css" />
+    <title>Type words</title>
+    <link rel="stylesheet" href="../word/styles/style.css" />
     <link rel="icon" href="../../assets/icons/logo.svg" />
   </head>
   <body>
@@ -31,19 +31,18 @@
       </div>
     </header>
     <main class="main">
-      <div class="letters-container"></div>
-      <section class="menu-section container">
-        <div class="menu-container">
-          <a href="../word/word.html">
-            <div class="words-block">
-              <h2>Word test</h2>
+      <section class="type-section container">
+        <div class="type-container">
+          <div class="words-block"></div>
+
+          <div class="stats-block">
+            <div class="timer">
+              <span class="minutes">__</span>:<span class="seconds">__</span>
             </div>
-          </a>
-          <a href="../text/text.html">
-            <div class="page-block">
-              <h2>Page test</h2>
-            </div>
-          </a>
+            <div class="cpm">CPM: <span class="cpm-data">__</span></div>
+            <div class="wpm">WPM: <span class="wpm-data">__</span></div>
+            <div class="errors">Errors: <span class="wpm-data">__</span></div>
+          </div>
         </div>
       </section>
     </main>
@@ -85,6 +84,6 @@
         </div>
       </div>
     </footer>
-    <script src="../main/scripts/mainScript.js"></script>
+    <script src="../word/scripts/wordScript.js"></script>
   </body>
 </html>

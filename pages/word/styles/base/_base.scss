@@ -1,0 +1,38 @@
+html,
+body {
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+// * {
+//   outline: 1px red dotted;
+// }
+
+body {
+  background-color: $light-white;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: exo-bold;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 40px;
+  color: $dark;
+}
+
+h2 {
+  margin: 0;
+  font-family: exo-bold;
+  text-transform: uppercase;
+  font-size: 30px;
+  color: $dark;
+}
+
+a {
+  text-decoration: none;
+}

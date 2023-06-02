@@ -1,20 +1,3 @@
-// (async () => {
-//     const url = 'http://metaphorpsum.com/paragraphs/1/1';
-// const options = {
-// 	method: 'GET',
-// 	headers: {
-// 	}
-// };
-
-// try {
-// 	const response = await fetch(url, options);
-// 	const result = await response.text();
-// 	console.log(result);
-// } catch (error) {
-// 	console.error(error);
-// }
-// })();
-
 //! falling letters
 
 const container = document.getElementsByClassName("letters-container")[0];
@@ -68,12 +51,13 @@ wordsDesc.style.left = wordsBlock.offsetLeft + "px";
 
 menuContainer.append(wordsDesc);
 
-wordsDesc.addEventListener("mouseenter", blockDescHandler);
+wordsBlock.addEventListener("mouseenter", blockDescOpen);
+wordsBlock.addEventListener("mouseleave", blockDescClose);
 
-function blockDescHandler(e) {
-  console.log("mouse");
-  console.log(e.target);
-  e.target.style.top = 600 + "px";
+function blockDescOpen(e) {
+  wordsDesc.style.top = wordsBlock.offsetTop + wordsDesc.offsetHeight + "px";
 }
 
-const pageDesc = document.createElement("div");
+function blockDescClose(e) {
+  wordsDesc.style.top = wordsBlock.offsetTop + "px";
+}
