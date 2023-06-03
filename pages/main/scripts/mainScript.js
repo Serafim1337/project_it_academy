@@ -1,3 +1,8 @@
+let typeTestConfig = {
+  timer: 0,
+  records: [],
+};
+
 //! falling letters
 
 const container = document.getElementsByClassName("letters-container")[0];
@@ -41,6 +46,24 @@ setInterval(function () {
 const menuContainer = document.querySelector(".menu-container");
 const wordsBlock = document.querySelector(".words-block");
 const pageBlock = document.querySelector(".page-block");
+
+wordsBlock.addEventListener("click", openTestPageHandler);
+
+function openTestPageHandler(e) {
+  if (localStorage.typeTestConfig) {
+    typeTestConfig = JSON.parse(localStorage.typeTestConfig);
+  }
+  typeTestConfig.timer = e.currentTarget.dataset.timer;
+  localStorage.typeTestConfig = JSON.stringify(typeTestConfig);
+  switch (e.currentTarget.dataset.testType) {
+    case "word":
+      window.open("../word/word.html", "_self");
+      break;
+    case "text":
+      window.open("../text/text.html", "_self");
+      break;
+  }
+}
 
 const wordsDesc = document.createElement("div");
 wordsDesc.classList.add("block-description");

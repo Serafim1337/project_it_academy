@@ -129,7 +129,8 @@ a {
   position: relative;
   z-index: 1;
   width: 300px;
-  text-align: center; }
+  text-align: center;
+  cursor: pointer; }
 
 .block-description {
   background-color: #FFF7D4;

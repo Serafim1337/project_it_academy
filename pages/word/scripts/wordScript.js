@@ -31,6 +31,17 @@ let mockWords = [
 
 // ! logics
 
+let testState = "beforeStart";
+// beforeStart - before user started typing
+// testOngoing - user is typing test
+// testFinished - timer is out, user receives results
+
+let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
+
+const TIMER_DURATION_MINUTES = typeTestConfig.timer / 60;
+
+console.log(TIMER_DURATION_MINUTES);
+
 function createTypeWords() {
   const wordsBatch = mockWords;
   const wordsBlock = document.querySelector(".words-block");
@@ -69,31 +80,57 @@ const stats = {
   },
   set charCounter(value) {
     this._charCounter = value;
-    charCounterChanged();
+    charCounterChanged(value);
   },
   get wordsCounter() {
     return this._wordsCounter;
   },
   set wordsCounter(value) {
     this._wordsCounter = value;
-    wordsCounterChanged();
+    wordsCounterChanged(value);
   },
 };
 
-function charCounterChanged() {}
+const cpmField = document.querySelector(".cpm-data");
+const wpmField = document.querySelector(".wpm-data");
 
-function wordsCounterChanged() {}
+function charCounterChanged(value) {
+  cpmField.textContent = value / TIMER_DURATION_MINUTES;
+}
+
+function wordsCounterChanged(value) {
+  wpmField.textContent = value / TIMER_DURATION_MINUTES;
+}
 
 document.addEventListener("keypress", typeHandler);
 
+const minutesField = document.querySelector(".minutes");
+const secondsField = document.querySelector(".seconds");
+
 function typeHandler(e) {
   e.preventDefault();
-  if (e.code.startsWith("Key")) {
-    const char = e.code.slice(-1).toLowerCase();
-    console.log(char);
-    checkChar(char);
-  } else if (e.code === "Space") {
-    checkChar(" ");
+  switch (testState) {
+    case "beforeStart":
+      if (e.code.startsWith("Key")) {
+        startTimer(10, minutesField, secondsField);
+        const char = e.code.slice(-1).toLowerCase();
+        checkChar(char);
+      } else if (e.code === "Space") {
+        checkChar(" ");
+      }
+      testState = "testOngoing";
+      break;
+    case "testOngoing":
+      if (e.code.startsWith("Key")) {
+        const char = e.code.slice(-1).toLowerCase();
+        checkChar(char);
+      } else if (e.code === "Space") {
+        checkChar(" ");
+      }
+      break;
+    case "testFinished":
+      // todo
+      break;
   }
 }
 
@@ -102,6 +139,9 @@ function checkChar(char) {
   if (char === currentChar.textContent) {
     if (!currentChar.dataset.state) {
       currentChar.dataset.state = "correct";
+      if (currentChar.textContent !== " ") {
+        ++stats.charCounter;
+      }
     }
 
     currentChar.dataset.order = "prev";
@@ -114,4 +154,41 @@ function checkChar(char) {
   } else {
     currentChar.dataset.state = "incorrect";
   }
+}
+
+function startTimer(duration, minutesDisplay, secondsDisplay) {
+  let start = Date.now(),
+    diff,
+    minutes,
+    seconds;
+  let ticksCounter = 0;
+
+  function timer() {
+    diff = duration - (((Date.now() - start) / 1000) | 0);
+
+    minutes = (diff / 60) | 0;
+    seconds = diff % 60 | 0;
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    minutesDisplay.textContent = minutes;
+    secondsDisplay.textContent = seconds;
+
+    ticksCounter++;
+  }
+
+  timer();
+  let interval = setInterval(() => {
+    timer();
+    if (ticksCounter > duration) {
+      clearInterval(interval);
+      setTimeout(endOfTestHandler, 0);
+    }
+  }, 1000);
+}
+
+function endOfTestHandler() {
+  testState = "testFinished";
+  alert(`Finished!\nCPM=${stats.charCounter}\nWPM=${stats.wordsCounter}`);
 }
