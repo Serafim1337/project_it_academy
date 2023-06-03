@@ -3,7 +3,7 @@
   src: url(/assets/fonts/Exo_2/static/Exo2-Thin.ttf); }
 @font-face {
   font-family: exo-reg;
-  src: url(../../../../assets/fonts/Exo_2/static/Exo2-Regular.ttf); }
+  src: url(../../../../assets/fonts/Exo_2/static/Exo2-Regular.ttf) format("truetype"); }
 @font-face {
   font-family: exo-med;
   src: url(/assets/fonts/Exo_2/static/Exo2-Medium.ttf); }
