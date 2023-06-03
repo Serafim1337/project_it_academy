@@ -3,20 +3,22 @@
   src: url(/assets/fonts/Exo_2/static/Exo2-Thin.ttf); }
 @font-face {
   font-family: "exo-reg";
-  src: url(../../../../assets/fonts/Exo_2/static/Exo2-Regular.ttf); }
+  font-weight: 400;
+  src: url(../../../../assets/fonts/Exo_2/Exo2-VariableFont_wght.ttf); }
 @font-face {
   font-family: "exo-med";
   src: url(/assets/fonts/Exo_2/static/Exo2-Medium.ttf); }
 @font-face {
   font-family: "exo-bold";
-  src: url(../../../../assets/fonts/Exo_2/static/Exo2-Bold.ttf); }
+  font-weight: 900;
+  src: url(../../../../assets/fonts/Exo_2/Exo2-VariableFont_wght.ttf); }
 html,
 body {
   margin: 0;
   scroll-behavior: smooth; }
 
 body {
-  background-color: #FFF7D4; }
+  background-color: #fff7d4; }
 
 .container {
   max-width: 1440px;
@@ -27,14 +29,14 @@ h1 {
   margin: 0;
   text-transform: uppercase;
   font-size: 40px;
-  color: #4C3D3D; }
+  color: #4c3d3d; }
 
 h2 {
   margin: 0;
   font-family: exo-bold;
   text-transform: uppercase;
   font-size: 30px;
-  color: #4C3D3D; }
+  color: #4c3d3d; }
 
 a {
   text-decoration: none; }
@@ -66,7 +68,7 @@ a {
   display: flex;
   gap: 30px; }
   .nav-block .nav-list .nav-link {
-    color: #C07F00;
+    color: #c07f00;
     font-family: exo-reg;
     font-size: 30px; }
 
@@ -78,7 +80,7 @@ a {
   position: relative; }
 
 .type-container {
-  background-color: #C07F00;
+  background-color: #c07f00;
   height: 60vh;
   width: 100%;
   border-radius: 30px;
@@ -91,7 +93,7 @@ a {
 .words-block {
   width: 700px;
   height: 100px;
-  background-color: #FFF7D4;
+  background-color: #fff7d4;
   overflow: hidden;
   position: relative;
   font-size: 50px;
@@ -132,9 +134,15 @@ a {
 .cpm,
 .wpm,
 .errors {
-  background-color: #FFF7D4;
+  background-color: #fff7d4;
   padding: 10px;
   font-size: 20px; }
+
+.timer {
+  font-family: exo-thin; }
+
+.cpm {
+  font-family: exo-med; }
 
 .test-input {
   position: absolute;
@@ -143,7 +151,7 @@ a {
 
 .footer {
   width: 100%;
-  background-color: #4C3D3D;
+  background-color: #4c3d3d;
   height: 20vh; }
 
 .footer-container {
@@ -163,7 +171,7 @@ a {
   gap: 20px; }
   .contacts-list .contacts-link {
     font-family: exo-reg;
-    color: #C07F00;
+    color: #c07f00;
     font-size: 20px;
     display: flex;
     align-items: center;
