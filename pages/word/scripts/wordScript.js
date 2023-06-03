@@ -82,16 +82,12 @@ const stats = {
 
 function charCounterChanged() {}
 
-function wordsCounterChanged() {
-  if (stats.wordsCounter > 2) {
-    mockWords = mockWords.concat(mockWords);
-    console.log(mockWords);
-  }
-}
+function wordsCounterChanged() {}
 
 document.addEventListener("keypress", typeHandler);
 
 function typeHandler(e) {
+  e.preventDefault();
   if (e.code.startsWith("Key")) {
     const char = e.code.slice(-1).toLowerCase();
     console.log(char);
