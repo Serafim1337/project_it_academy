@@ -12,6 +12,10 @@ body {
   background-color: $light-white;
 }
 
+.body-lock {
+  overflow: hidden;
+}
+
 .container {
   max-width: 1440px;
   margin: 0 auto;

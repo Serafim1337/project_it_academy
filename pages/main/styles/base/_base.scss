@@ -4,12 +4,12 @@ body {
   scroll-behavior: smooth;
 }
 
-* {
-  outline: 1px red dotted;
-}
-
 body {
   background-color: $light-white;
+}
+
+.body-lock {
+  overflow: hidden;
 }
 
 .container {

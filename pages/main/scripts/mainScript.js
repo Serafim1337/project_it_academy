@@ -84,3 +84,69 @@ function blockDescOpen(e) {
 function blockDescClose(e) {
   wordsDesc.style.top = wordsBlock.offsetTop + "px";
 }
+
+//! records
+
+const recordsLink = document.querySelector(".records-link");
+
+recordsLink.addEventListener("click", recordsLinkHandler);
+
+function recordsLinkHandler(e) {
+  document.body.classList.toggle("body-lock");
+  const recordsOverlay = document.querySelector(".records-overlay");
+  recordsOverlay.style.display = "flex";
+  getRecords();
+}
+
+const closeButton = document.querySelector(".close-container");
+
+closeButton.addEventListener("click", closeButtonHandler);
+
+function closeButtonHandler(e) {
+  document.body.classList.toggle("body-lock");
+  const recordsOverlay = document.querySelector(".records-overlay");
+  recordsOverlay.style.display = "none";
+}
+
+const recordsOverlay = document.querySelector(".records-overlay");
+
+recordsOverlay.addEventListener("click", overlayHandler);
+
+function overlayHandler(e) {
+  const recordsOverlay = document.querySelector(".records-overlay");
+  if (e.target == recordsOverlay) {
+    document.body.classList.toggle("body-lock");
+    recordsOverlay.style.display = "none";
+  }
+}
+
+function getRecords() {
+  const tBody = document.querySelector(".tbody-content");
+  if (localStorage.typeTestConfig) {
+    typeTestConfig = JSON.parse(localStorage.typeTestConfig);
+  }
+  if (typeTestConfig.records.length == 0) {
+    let tr = document.createElement("tr");
+    tr.style.textAlign = "center";
+    let img = document.createElement("img");
+    img.src = "../../assets/images/not_found.png";
+    tr.append(img);
+    tBody.append(tr);
+  }
+
+  for (let record of typeTestConfig.records) {
+    let tr = document.createElement("tr");
+    let tdName = document.createElement("td");
+    tdName.textContent = record.name;
+    let tdTime = document.createElement("td");
+    tdTime.textContent = record.time;
+    let tdCpm = document.createElement("td");
+    tdCpm.textContent = record.cpm;
+    let tdWpm = document.createElement("td");
+    tdWpm.textContent = record.wpm;
+    let tdErr = document.createElement("td");
+    tdErr.textContent = record.errors;
+    tr.append(tdName, tdTime, tdCpm, tdWpm, tdErr);
+    tBody.append(tr);
+  }
+}

@@ -323,13 +323,26 @@ function startTimer(duration, minutesDisplay, secondsDisplay) {
 function endOfTestHandler() {
   testState = "testFinished";
   document.removeEventListener("keypress", typeHandler);
+  saveResults();
   openFinishModal();
+}
+
+function saveResults() {
+  let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
+  const currentResults = {
+    time: TIMER_DURATION_MINUTES,
+    cpm: stats.charCounter,
+    wpm: stats.wordsCounter,
+    errors: stats.errorsCounter,
+  };
+  typeTestConfig.records.push(currentResults);
+  localStorage.typeTestConfig = JSON.stringify(typeTestConfig);
 }
 
 function openFinishModal() {
   document.body.classList.toggle("body-lock");
-  const overlay = document.querySelector(".overlay");
-  overlay.style.display = "flex";
+  const modalOverlay = document.querySelector(".overlay");
+  modalOverlay.style.display = "flex";
 
   const modal = document.querySelector(".modal-finish");
 
