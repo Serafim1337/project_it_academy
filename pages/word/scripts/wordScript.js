@@ -27,6 +27,126 @@ let mockWords = [
   "fantasize",
   "paramedic",
   "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
+  "ceremony",
+  "gents",
+  "obvious",
+  "stew",
+  "annotate",
+  "sharply",
+  "daylight",
+  "fantasize",
+  "paramedic",
+  "trouble",
 ];
 
 // ! logics
@@ -39,8 +159,6 @@ let testState = "beforeStart";
 let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
 
 const TIMER_DURATION_MINUTES = typeTestConfig.timer / 60;
-
-console.log(TIMER_DURATION_MINUTES);
 
 function createTypeWords() {
   const wordsBatch = mockWords;
@@ -72,34 +190,48 @@ createTypeWords();
 const string = document.querySelector(".string");
 const chars = document.querySelectorAll(".character");
 
+const cpmField = document.querySelector(".cpm-data");
+const wpmField = document.querySelector(".wpm-data");
+const errorsField = document.querySelector(".errors-data");
+
 const stats = {
   _charCounter: 0,
   _wordsCounter: 0,
+  _errorsCounter: 0,
+
   get charCounter() {
     return this._charCounter;
   },
   set charCounter(value) {
     this._charCounter = value;
-    charCounterChanged(value);
+    showCharCounter(cpmField);
   },
   get wordsCounter() {
     return this._wordsCounter;
   },
   set wordsCounter(value) {
     this._wordsCounter = value;
-    wordsCounterChanged(value);
+    showWordsCounter(wpmField);
+  },
+  get errorsCounter() {
+    return this._errorsCounter;
+  },
+  set errorsCounter(value) {
+    this._errorsCounter = value;
+    showErrorsCounter(errorsField);
   },
 };
 
-const cpmField = document.querySelector(".cpm-data");
-const wpmField = document.querySelector(".wpm-data");
-
-function charCounterChanged(value) {
-  cpmField.textContent = value / TIMER_DURATION_MINUTES;
+function showCharCounter(field) {
+  field.textContent = stats.charCounter / TIMER_DURATION_MINUTES;
 }
 
-function wordsCounterChanged(value) {
-  wpmField.textContent = value / TIMER_DURATION_MINUTES;
+function showWordsCounter(field) {
+  field.textContent = stats.wordsCounter / TIMER_DURATION_MINUTES;
+}
+
+function showErrorsCounter(field) {
+  field.textContent = stats.errorsCounter;
 }
 
 document.addEventListener("keypress", typeHandler);
@@ -112,7 +244,7 @@ function typeHandler(e) {
   switch (testState) {
     case "beforeStart":
       if (e.code.startsWith("Key")) {
-        startTimer(10, minutesField, secondsField);
+        startTimer(1, minutesField, secondsField);
         const char = e.code.slice(-1).toLowerCase();
         checkChar(char);
       } else if (e.code === "Space") {
@@ -147,12 +279,12 @@ function checkChar(char) {
     currentChar.dataset.order = "prev";
     if (currentChar.textContent === " ") {
       ++stats.wordsCounter;
-      console.log(stats.wordsCounter);
     }
     currentChar.nextElementSibling.dataset.order = "current";
     string.style.left = string.offsetLeft - currentChar.offsetWidth + "px";
   } else {
     currentChar.dataset.state = "incorrect";
+    ++stats.errorsCounter;
   }
 }
 
@@ -190,5 +322,37 @@ function startTimer(duration, minutesDisplay, secondsDisplay) {
 
 function endOfTestHandler() {
   testState = "testFinished";
-  alert(`Finished!\nCPM=${stats.charCounter}\nWPM=${stats.wordsCounter}`);
+  document.removeEventListener("keypress", typeHandler);
+  openFinishModal();
 }
+
+function openFinishModal() {
+  document.body.classList.toggle("body-lock");
+  const overlay = document.querySelector(".overlay");
+  overlay.style.display = "flex";
+
+  const modal = document.querySelector(".modal-finish");
+
+  const testContent = document.querySelector(".test-content");
+  const testString = document.querySelector(".string");
+  testContent.append(testString);
+
+  const cpmResult = modal.querySelector(".cpm-data");
+  const wpmResult = modal.querySelector(".wpm-data");
+  const errorsResult = modal.querySelector(".errors-data");
+
+  showCharCounter(cpmResult);
+  showWordsCounter(wpmResult);
+  showErrorsCounter(errorsResult);
+}
+
+const modalMainButton = document.querySelector(".modal-button-main");
+const modalRetryButton = document.querySelector(".modal-button-retry");
+
+modalMainButton.addEventListener("click", function (e) {
+  window.open("../../pages/main/main.html", "_self");
+});
+
+modalRetryButton.addEventListener("click", function (e) {
+  location.reload();
+});

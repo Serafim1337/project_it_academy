@@ -81,14 +81,13 @@
   background-color: $light-white;
   padding: 10px;
   font-size: 20px;
+  font-family: exo-med;
 }
 
 .timer {
-  font-family: exo-thin;
 }
 
 .cpm {
-  font-family: exo-med;
 }
 
 .wpm {
@@ -98,4 +97,47 @@
   position: absolute;
   width: 100%;
   height: 100%;
+}
+
+.body-lock {
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-finish {
+  width: 700px;
+  height: 500px;
+  padding: 20px;
+  background-color: $light-white;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  text-align: center;
+}
+
+.modal-info {
+  .test-content {
+    max-height: 200px;
+    overflow: scroll;
+    overflow-x: hidden;
+  }
+}
+
+.modal-controls {
 }

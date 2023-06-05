@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../word/styles/style.css" />
     <link rel="icon" href="../../assets/icons/logo.svg" />
   </head>
-  <body>
+  <body class="body-lock">
     <header class="header">
       <div class="header-container container">
         <a href="../main/main.html">
@@ -43,10 +43,34 @@
             </div>
             <div class="cpm">CPM: <span class="cpm-data">__</span></div>
             <div class="wpm">WPM: <span class="wpm-data">__</span></div>
-            <div class="errors">Errors: <span class="wpm-data">__</span></div>
+            <div class="errors">
+              Missclicks: <span class="errors-data">__</span>
+            </div>
           </div>
         </div>
       </section>
+      <div class="overlay">
+        <div class="modal-finish">
+          <div class="modal-title">
+            <h2>Nice job!</h2>
+            <h2>look at your results!</h2>
+          </div>
+          <div class="modal-info">
+            <div class="test-content"></div>
+            <div class="stats">
+              <div class="cpm">CPM: <span class="cpm-data">__</span></div>
+              <div class="wpm">WPM: <span class="wpm-data">__</span></div>
+              <div class="errors">
+                Missclicks: <span class="errors-data">__</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-controls">
+            <button class="button modal-button-main">Main menu</button>
+            <button class="button modal-button-retry">Try again</button>
+          </div>
+        </div>
+      </div>
     </main>
     <footer class="footer">
       <div class="footer-container container">
