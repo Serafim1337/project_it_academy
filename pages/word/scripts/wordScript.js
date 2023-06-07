@@ -1,6 +1,6 @@
 // ! api
-async function getAPIWords() {
-  const url = "https://random-word-api.vercel.app/api?words=10";
+async function getAPIWords(wordsNumber) {
+  const url = `https://random-word-api.vercel.app/api?words=${wordsNumber}`;
   const options = {
     method: "GET",
     headers: {},
@@ -16,139 +16,6 @@ async function getAPIWords() {
   }
 }
 
-let mockWords = [
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-  "ceremony",
-  "gents",
-  "obvious",
-  "stew",
-  "annotate",
-  "sharply",
-  "daylight",
-  "fantasize",
-  "paramedic",
-  "trouble",
-];
-
 // ! logics
 
 let testState = "beforeStart";
@@ -161,34 +28,58 @@ let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
 const TIMER_DURATION_MINUTES = typeTestConfig.timer / 60;
 
 function createTypeWords() {
-  const wordsBatch = mockWords;
   const wordsBlock = document.querySelector(".words-block");
+  const string = document.querySelector(".string");
 
-  const string = document.createElement("div");
-  string.classList.add("string");
-  string.style.left = wordsBlock.offsetWidth / 2 + "px";
+  switch (testState) {
+    case "beforeStart":
+      string.style.left = wordsBlock.offsetWidth / 2 + "px";
 
-  for (let word of wordsBatch) {
-    for (let char of word) {
-      const charSpan = document.createElement("span");
-      charSpan.classList.add("character");
-      charSpan.dataset.order = "next";
-      charSpan.textContent = char;
-      string.append(charSpan);
-    }
-    const space = document.createElement("span");
-    space.textContent = " ";
-    space.classList.add("character");
-    string.append(space);
+      getAPIWords(10).then((data) => {
+        const wordsBatch = JSON.parse(data);
+        for (let word of wordsBatch) {
+          for (let char of word) {
+            const charSpan = document.createElement("span");
+            charSpan.classList.add("character");
+            charSpan.dataset.order = "next";
+            charSpan.textContent = char;
+
+            string.append(charSpan);
+          }
+
+          const space = document.createElement("span");
+          space.textContent = " ";
+          space.classList.add("character");
+          string.append(space);
+        }
+
+        string.firstElementChild.dataset.order = "current";
+        string.style.visibility = "visible";
+      });
+      break;
+    case "testOngoing":
+      getAPIWords(10).then((data) => {
+        const wordsBatch = JSON.parse(data);
+
+        for (let word of wordsBatch) {
+          for (let char of word) {
+            const charSpan = document.createElement("span");
+            charSpan.classList.add("character");
+            charSpan.dataset.order = "next";
+            charSpan.textContent = char;
+            string.append(charSpan);
+          }
+          const space = document.createElement("span");
+          space.textContent = " ";
+          space.classList.add("character");
+          string.append(space);
+        }
+      });
+      break;
   }
-  string.firstElementChild.dataset.order = "current";
-  wordsBlock.append(string);
 }
 
-createTypeWords();
-
-const string = document.querySelector(".string");
-const chars = document.querySelectorAll(".character");
+// createTypeWords();
 
 const cpmField = document.querySelector(".cpm-data");
 const wpmField = document.querySelector(".wpm-data");
@@ -223,11 +114,15 @@ const stats = {
 };
 
 function showCharCounter(field) {
-  field.textContent = stats.charCounter / TIMER_DURATION_MINUTES;
+  let cpmValue =
+    Math.round((stats.charCounter / TIMER_DURATION_MINUTES) * 100) / 100;
+  field.textContent = cpmValue;
 }
 
 function showWordsCounter(field) {
-  field.textContent = stats.wordsCounter / TIMER_DURATION_MINUTES;
+  let wpmValue =
+    Math.round((stats.wordsCounter / TIMER_DURATION_MINUTES) * 100) / 100;
+  field.textContent = wpmValue;
 }
 
 function showErrorsCounter(field) {
@@ -244,7 +139,7 @@ function typeHandler(e) {
   switch (testState) {
     case "beforeStart":
       if (e.code.startsWith("Key")) {
-        startTimer(1, minutesField, secondsField);
+        startTimer(60, minutesField, secondsField);
         const char = e.code.slice(-1).toLowerCase();
         checkChar(char);
       } else if (e.code === "Space") {
@@ -255,6 +150,7 @@ function typeHandler(e) {
     case "testOngoing":
       if (e.code.startsWith("Key")) {
         const char = e.code.slice(-1).toLowerCase();
+        // console.log(char);
         checkChar(char);
       } else if (e.code === "Space") {
         checkChar(" ");
@@ -267,6 +163,7 @@ function typeHandler(e) {
 }
 
 function checkChar(char) {
+  const string = document.querySelector(".string");
   const currentChar = document.querySelector('[data-order="current"]');
   if (char === currentChar.textContent) {
     if (!currentChar.dataset.state) {
@@ -279,7 +176,11 @@ function checkChar(char) {
     currentChar.dataset.order = "prev";
     if (currentChar.textContent === " ") {
       ++stats.wordsCounter;
+      if (stats.wordsCounter % 5 == 0) {
+        createTypeWords();
+      }
     }
+
     currentChar.nextElementSibling.dataset.order = "current";
     string.style.left = string.offsetLeft - currentChar.offsetWidth + "px";
   } else {
@@ -350,10 +251,12 @@ function openFinishModal() {
   const testString = document.querySelector(".string");
   testContent.append(testString);
 
+  const testDuration = modal.querySelector(".timer-data");
   const cpmResult = modal.querySelector(".cpm-data");
   const wpmResult = modal.querySelector(".wpm-data");
   const errorsResult = modal.querySelector(".errors-data");
 
+  testDuration.textContent = TIMER_DURATION_MINUTES;
   showCharCounter(cpmResult);
   showWordsCounter(wpmResult);
   showErrorsCounter(errorsResult);
