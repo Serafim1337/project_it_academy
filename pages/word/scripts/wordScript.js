@@ -79,7 +79,7 @@ function createTypeWords() {
   }
 }
 
-// createTypeWords();
+createTypeWords();
 
 const cpmField = document.querySelector(".cpm-data");
 const wpmField = document.querySelector(".wpm-data");
@@ -139,7 +139,7 @@ function typeHandler(e) {
   switch (testState) {
     case "beforeStart":
       if (e.code.startsWith("Key")) {
-        startTimer(60, minutesField, secondsField);
+        startTimer(5, minutesField, secondsField);
         const char = e.code.slice(-1).toLowerCase();
         checkChar(char);
       } else if (e.code === "Space") {
