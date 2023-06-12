@@ -2,37 +2,153 @@
   height: 100vh;
 }
 
-.menu-section {
-  padding: 30vh 30px 0 30px;
+.type-section {
+  padding: 1vh 30px 0 30px;
   position: relative;
 }
 
-.menu-container {
+.type-container {
   background-color: $orange;
-  height: 60vh;
+  height: 86vh;
   width: 100%;
   border-radius: 30px;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  padding: 40px;
+  box-sizing: border-box;
+
+  font-family: exo-reg;
 }
 
-.words-block,
-.page-block {
-  background-color: $yellow;
-  border-radius: 30px;
-  height: fit-content;
-  padding: 30px;
+.text-block {
+  width: 100%;
+  height: 500px;
+  background-color: $light-white;
+  overflow: hidden;
   position: relative;
-  z-index: 1;
-  width: 300px;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+
+  .string {
+    font-size: 1em;
+    position: absolute;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    visibility: hidden;
+  }
+}
+
+.character {
+  font-family: exo-med;
+  background-color: yellow;
+  // padding: 1px;
+  // margin: 1px;
+  // border-radius: 10px;
+  width: 0.9em;
   text-align: center;
 }
 
-.block-description {
+.character[data-order="current"] {
+  background-color: rgb(86, 86, 225);
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.character[data-state="correct"] {
+  background-color: rgb(2, 139, 55);
+}
+
+.character[data-state="incorrect"] {
+  background-color: rgb(222, 12, 12);
+}
+
+.stats-block {
+  display: flex;
+  width: 700px;
+  justify-content: space-between;
+}
+
+.timer,
+.cpm,
+.wpm,
+.errors {
   background-color: $light-white;
-  opacity: 0.5;
+  width: 150px;
+  padding: 10px;
+  font-size: 20px;
+  font-family: exo-med;
+  text-align: center;
+}
+
+.timer {
+}
+
+.cpm {
+}
+
+.wpm {
+}
+
+.test-input {
   position: absolute;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-finish {
+  width: 700px;
+  height: 500px;
+  padding: 20px;
+  background-color: $light-white;
   border-radius: 30px;
-  transition: top 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  text-align: center;
+}
+
+.modal-info {
+  width: 100%;
+  .test-content {
+    font-size: 30px;
+    width: 100%;
+    height: 200px;
+    overflow: scroll;
+    overflow-x: hidden;
+  }
+}
+
+.modal-controls {
 }

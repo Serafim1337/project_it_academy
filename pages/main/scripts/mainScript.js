@@ -48,6 +48,7 @@ const wordsBlock = document.querySelector(".words-block");
 const pageBlock = document.querySelector(".page-block");
 
 wordsBlock.addEventListener("click", openTestPageHandler);
+pageBlock.addEventListener("click", openTestPageHandler);
 
 function openTestPageHandler(e) {
   if (localStorage.typeTestConfig) {

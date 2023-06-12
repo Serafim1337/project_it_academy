@@ -5,10 +5,115 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Type text</title>
-    <link rel="stylesheet" href="../text/styles/style.scss" />
+    <link rel="stylesheet" href="../text/styles/style.css" />
     <link rel="icon" href="../../assets/icons/logo.svg" />
   </head>
   <body>
+    <header class="header">
+      <div class="header-container container">
+        <a href="../main/main.html">
+          <span class="logo-block">
+            <img
+              src="../../assets/icons/logo.svg"
+              alt="logo keyboard"
+              class="logo"
+            />
+            <h1>Type speed test</h1>
+          </span>
+        </a>
+        <nav class="nav-block">
+          <ul class="nav-list">
+            <li class="nav-item"><a href="#" class="nav-link">Link 1</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Link 2</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Link 3</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main class="main">
+      <section class="type-section container">
+        <div class="type-container">
+          <div class="text-block">
+            <input class="test-input" />
+            <div class="string"></div>
+          </div>
+
+          <div class="stats-block">
+            <div class="timer">
+              <span class="minutes">__</span>:<span class="seconds">__</span>
+            </div>
+            <div class="cpm">CPM: <span class="cpm-data">__</span></div>
+            <div class="wpm">WPM: <span class="wpm-data">__</span></div>
+            <div class="errors">
+              Missclicks: <span class="errors-data">__</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="overlay">
+        <div class="modal-finish">
+          <div class="modal-title">
+            <h2>Nice job!</h2>
+            <h2>look at your results!</h2>
+          </div>
+          <div class="modal-info">
+            <div class="test-content"></div>
+            <div class="stats">
+              <div class="timer">
+                Test duration: <span class="timer-data">__</span>
+              </div>
+              <div class="cpm">CPM: <span class="cpm-data">__</span></div>
+              <div class="wpm">WPM: <span class="wpm-data">__</span></div>
+              <div class="errors">
+                Missclicks: <span class="errors-data">__</span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-controls">
+            <button class="button modal-button-main">Main menu</button>
+            <button class="button modal-button-retry">Try again</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-container container">
+        <div class="contacts">
+          <ul class="contacts-list">
+            <li class="contacts-item">
+              <a href="#" class="contacts-link">
+                <img
+                  src="../../assets/icons/github.svg"
+                  alt="github logo"
+                  class="contacts-logo"
+                />
+                <span>GitHub</span>
+              </a>
+            </li>
+            <li class="contacts-item">
+              <a href="#" class="contacts-link">
+                <img
+                  src="../../assets/icons/linkedin.svg"
+                  alt="linkedin logo"
+                  class="contacts-logo"
+                />
+                <span>LinkedIn</span>
+              </a>
+            </li>
+            <li class="contacts-item">
+              <a href="#" class="contacts-link">
+                <img
+                  src="../../assets/icons/telegram.svg"
+                  alt="telegram logo"
+                  class="contacts-logo"
+                />
+                <span>Telegram</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
     <script src="../text/scripts/textScript.js"></script>
   </body>
 </html>
