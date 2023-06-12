@@ -139,7 +139,7 @@ function typeHandler(e) {
   switch (testState) {
     case "beforeStart":
       if (e.code.startsWith("Key")) {
-        startTimer(5, minutesField, secondsField);
+        startTimer(typeTestConfig.timer, minutesField, secondsField);
         const char = e.code.slice(-1).toLowerCase();
         checkChar(char);
       } else if (e.code === "Space") {
