@@ -110,14 +110,19 @@ a {
     width: 100%;
     flex-wrap: wrap;
     visibility: hidden; }
+    .text-block .string p {
+      margin: 10px;
+      white-space: pre-wrap;
+      letter-spacing: 2px; }
 
 .character {
   font-family: exo-med;
   background-color: yellow;
   width: 0.9em;
-  text-align: center; }
+  text-align: center;
+  position: relative; }
 
-.character[data-order="current"] {
+.character[data-order="currentChar"] {
   background-color: #5656e1; }
 
 @keyframes blink {
@@ -154,7 +159,8 @@ a {
   width: 100%;
   height: 100%;
   border: none;
-  background: transparent; }
+  background: transparent;
+  display: none; }
 
 .overlay {
   position: absolute;
@@ -233,6 +239,9 @@ a {
   .stats-block {
     width: fit-content;
     flex-direction: column;
-    gap: 10px; } }
+    gap: 10px; }
+
+  .test-input {
+    display: block; } }
 
 /*# sourceMappingURL=style.css.map */

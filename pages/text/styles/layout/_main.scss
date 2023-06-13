@@ -39,6 +39,12 @@
     width: 100%;
     flex-wrap: wrap;
     visibility: hidden;
+
+    p {
+      margin: 10px;
+      white-space: pre-wrap;
+      letter-spacing: 2px;
+    }
   }
 }
 
@@ -50,10 +56,25 @@
   // border-radius: 10px;
   width: 0.9em;
   text-align: center;
+  position: relative;
 }
 
-.character[data-order="current"] {
+.character[data-order="currentChar"] {
   background-color: rgb(86, 86, 225);
+
+  // &:after {
+  //   position: absolute;
+  //   content: "";
+  //   height: 2px;
+
+  //   bottom: -4px;
+
+  //   margin: 0 auto;
+  //   left: 0;
+  //   right: 0;
+  //   width: 10px;
+  //   background: green;
+  // }
 }
 
 @keyframes blink {
@@ -109,6 +130,7 @@
   height: 100%;
   border: none;
   background: transparent;
+  display: none;
 }
 
 .overlay {
