@@ -16,7 +16,7 @@ async function getApiText(numberOfParagraphs, numberOfSentences) {
   }
 }
 
-let mockText = `<p>The.</p>
+let mockText = `<p>The. Test.</p>
 
   <p>The first scalelike crook is, in its own way, a gorilla. The fratchy planet reveals itself as a leisure example to those who look. A paling indonesia without vibraphones is truly a paul of staple cabinets. As far as we can estimate, they were lost without the wasted tenor that composed their coil.</p>
   
@@ -75,21 +75,58 @@ function createTypeText() {
 
       break;
     case "testOngoing":
-      textBatch = mockText;
-
-      for (let char of textBatch) {
-        const charSpan = document.createElement("span");
-        charSpan.classList.add("character");
-        charSpan.dataset.order = "next";
-        charSpan.textContent = char;
-        string.append(charSpan);
-      }
-
-      break;
   }
 }
 
 createTypeText();
+
+const cpmField = document.querySelector(".cpm-data");
+const wpmField = document.querySelector(".wpm-data");
+const errorsField = document.querySelector(".errors-data");
+
+const stats = {
+  _charCounter: 0,
+  _wordsCounter: 0,
+  _errorsCounter: 0,
+
+  get charCounter() {
+    return this._charCounter;
+  },
+  set charCounter(value) {
+    this._charCounter = value;
+    showCharCounter(cpmField);
+  },
+  get wordsCounter() {
+    return this._wordsCounter;
+  },
+  set wordsCounter(value) {
+    this._wordsCounter = value;
+    showWordsCounter(wpmField);
+  },
+  get errorsCounter() {
+    return this._errorsCounter;
+  },
+  set errorsCounter(value) {
+    this._errorsCounter = value;
+    showErrorsCounter(errorsField);
+  },
+};
+
+function showCharCounter(field) {
+  let cpmValue =
+    Math.round((stats.charCounter / TIMER_DURATION_MINUTES) * 100) / 100;
+  field.textContent = cpmValue;
+}
+
+function showWordsCounter(field) {
+  let wpmValue =
+    Math.round((stats.wordsCounter / TIMER_DURATION_MINUTES) * 100) / 100;
+  field.textContent = wpmValue;
+}
+
+function showErrorsCounter(field) {
+  field.textContent = stats.errorsCounter;
+}
 
 // ! type logics
 
@@ -99,20 +136,17 @@ function typeHandler(e) {
   e.preventDefault();
   switch (testState) {
     case "beforeStart":
-      console.log("key", e.key);
+      // console.log("key", e.key);
       if (e.key !== "Shift") {
         checkChar(e.key);
       }
 
-      // testState = "testOngoing";
+      testState = "testOngoing";
       break;
     case "testOngoing":
-      if (e.code.startsWith("Key")) {
-        const char = e.code.slice(-1).toLowerCase();
-        // console.log(char);
-        checkChar(char);
-      } else if (e.code === "Space") {
-        checkChar(" ");
+      // console.log("key", e.key);
+      if (e.key !== "Shift") {
+        checkChar(e.key);
       }
       break;
     case "testFinished":
@@ -127,11 +161,19 @@ function checkChar(char) {
     '[data-order="currentParagraph"]'
   );
   let currentChar = document.querySelector('[data-order="currentChar"]');
-  console.log("char", char);
+  console.log(char);
 
   if (char === currentChar.textContent) {
     if (!currentChar.dataset.state) {
       currentChar.dataset.state = "correct";
+      ++stats.charCounter;
+    }
+
+    if (
+      currentChar.textContent === " "
+      // todo
+    ) {
+      ++stats.wordsCounter;
     }
 
     currentChar.dataset.order = "prevChar";
@@ -149,6 +191,7 @@ function checkChar(char) {
     }
   } else {
     currentChar.dataset.state = "incorrect";
+    ++stats.errorsCounter;
   }
 }
 
