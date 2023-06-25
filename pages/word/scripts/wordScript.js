@@ -8,8 +8,7 @@ async function getAPIWords(wordsNumber) {
 
   try {
     const response = await fetch(url, options);
-    const result = await response.text();
-    // console.log(result);
+    const result = await response.json();
     return result;
   } catch (error) {
     console.error(error);
@@ -27,83 +26,20 @@ let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
 
 const TIMER_DURATION_MINUTES = typeTestConfig.timer / 60;
 
-function createTypeWords() {
-  const wordsBlock = document.querySelector(".words-block");
-  const string = document.querySelector(".string");
-
-  switch (testState) {
-    case "beforeStart":
-      string.style.left = wordsBlock.offsetWidth / 2 + "px";
-
-      getAPIWords(10).then((data) => {
-        const wordsBatch = JSON.parse(data);
-        for (let word of wordsBatch) {
-          for (let char of word) {
-            const charSpan = document.createElement("span");
-            charSpan.classList.add("character");
-            charSpan.dataset.order = "next";
-            charSpan.textContent = char;
-
-            string.append(charSpan);
-          }
-
-          const space = document.createElement("span");
-          space.textContent = " ";
-          space.classList.add("character");
-          string.append(space);
-        }
-
-        string.firstElementChild.dataset.order = "current";
-        string.style.visibility = "visible";
-      });
-      break;
-    case "testOngoing":
-      getAPIWords(10).then((data) => {
-        const wordsBatch = JSON.parse(data);
-
-        for (let word of wordsBatch) {
-          for (let char of word) {
-            const charSpan = document.createElement("span");
-            charSpan.classList.add("character");
-            charSpan.dataset.order = "next";
-            charSpan.textContent = char;
-            string.append(charSpan);
-          }
-          const space = document.createElement("span");
-          space.textContent = " ";
-          space.classList.add("character");
-          string.append(space);
-        }
-      });
-      break;
-  }
-}
-
-createTypeWords();
-
 const cpmField = document.querySelector(".cpm-data");
 const wpmField = document.querySelector(".wpm-data");
 const errorsField = document.querySelector(".errors-data");
+const minutesField = document.querySelector(".minutes");
+const secondsField = document.querySelector(".seconds");
+
+const modalMainButton = document.querySelector(".modal-button-main");
+const modalRetryButton = document.querySelector(".modal-button-retry");
 
 const stats = {
-  _charCounter: 0,
-  _wordsCounter: 0,
+  charCounter: 0,
+  wordsCounter: 0,
   _errorsCounter: 0,
 
-  get charCounter() {
-    return this._charCounter;
-  },
-  set charCounter(value) {
-    this._charCounter = value;
-    showCharCounter(cpmField);
-  },
-  get wordsCounter() {
-    return this._wordsCounter;
-  },
-  set wordsCounter(value) {
-    this._wordsCounter = value;
-    showWordsCounter(wpmField);
-  },
   get errorsCounter() {
     return this._errorsCounter;
   },
@@ -113,26 +49,67 @@ const stats = {
   },
 };
 
-function showCharCounter(field) {
-  let cpmValue =
-    Math.round((stats.charCounter / TIMER_DURATION_MINUTES) * 100) / 100;
-  field.textContent = cpmValue;
+document.addEventListener("keypress", typeHandler);
+
+modalMainButton.addEventListener("click", function (e) {
+  window.open("../../pages/main/main.html", "_self");
+});
+
+modalRetryButton.addEventListener("click", function (e) {
+  location.reload();
+});
+
+createTypeWords();
+
+function showCPMCounter(secFromStart, field) {
+  const minFromStart = (secFromStart / 60) | 0;
+  field.textContent = roundTo2Decimals(stats.charCounter / (minFromStart + 1));
 }
 
-function showWordsCounter(field) {
-  let wpmValue =
-    Math.round((stats.wordsCounter / TIMER_DURATION_MINUTES) * 100) / 100;
-  field.textContent = wpmValue;
+function showWPMCounter(secFromStart, field) {
+  const minFromStart = (secFromStart / 60) | 0;
+  field.textContent = roundTo2Decimals(stats.wordsCounter / (minFromStart + 1));
 }
 
 function showErrorsCounter(field) {
-  field.textContent = stats.errorsCounter;
+  field.textContent = stats.errorsCounter > 99 ? "99+" : stats.errorsCounter;
 }
 
-document.addEventListener("keypress", typeHandler);
+function addWordsToString(string) {
+  return getAPIWords(10).then((wordsList) => {
+    for (let word of wordsList) {
+      for (let char of word) {
+        const charSpan = document.createElement("span");
+        charSpan.classList.add("character");
+        charSpan.dataset.order = "next";
+        charSpan.textContent = char;
+        string.append(charSpan);
+      }
+      const space = document.createElement("span");
+      space.textContent = " ";
+      space.classList.add("character");
+      string.append(space);
+    }
+  });
+}
 
-const minutesField = document.querySelector(".minutes");
-const secondsField = document.querySelector(".seconds");
+function createTypeWords() {
+  const wordsBlock = document.querySelector(".words-block");
+  const string = document.querySelector(".string");
+
+  switch (testState) {
+    case "beforeStart":
+      string.style.left = wordsBlock.offsetWidth / 2 + "px";
+      addWordsToString(string).then(() => {
+        string.firstElementChild.dataset.order = "current";
+        string.style.visibility = "visible";
+      });
+      break;
+    case "testOngoing":
+      console.log(addWordsToString(string));
+      break;
+  }
+}
 
 function typeHandler(e) {
   e.preventDefault();
@@ -145,19 +122,21 @@ function typeHandler(e) {
       } else if (e.code === "Space") {
         checkChar(" ");
       }
+      soundInit();
+      typeSoundPlay();
       testState = "testOngoing";
       break;
     case "testOngoing":
       if (e.code.startsWith("Key")) {
         const char = e.code.slice(-1).toLowerCase();
-        // console.log(char);
         checkChar(char);
       } else if (e.code === "Space") {
         checkChar(" ");
       }
+      typeSoundPlay();
       break;
     case "testFinished":
-      // todo
+      // state handled in endOfTestHandler
       break;
   }
 }
@@ -197,10 +176,14 @@ function startTimer(duration, minutesDisplay, secondsDisplay) {
   let ticksCounter = 0;
 
   function timer() {
-    diff = duration - (((Date.now() - start) / 1000) | 0);
+    const secFromStart = ((Date.now() - start) / 1000) | 0;
+    diff = duration - secFromStart;
 
     minutes = (diff / 60) | 0;
     seconds = diff % 60 | 0;
+
+    showCPMCounter(secFromStart, cpmField);
+    showWPMCounter(secFromStart, wpmField);
 
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -231,6 +214,7 @@ function endOfTestHandler() {
 function saveResults() {
   let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
   const currentResults = {
+    type: "Word",
     time: TIMER_DURATION_MINUTES,
     cpm: stats.charCounter,
     wpm: stats.wordsCounter,
@@ -256,19 +240,51 @@ function openFinishModal() {
   const wpmResult = modal.querySelector(".wpm-data");
   const errorsResult = modal.querySelector(".errors-data");
 
-  testDuration.textContent = TIMER_DURATION_MINUTES;
-  showCharCounter(cpmResult);
-  showWordsCounter(wpmResult);
+  testDuration.textContent = `${TIMER_DURATION_MINUTES} min`;
+
+  showCPMCounter(TIMER_DURATION_MINUTES * 60, cpmResult);
+  showWPMCounter(TIMER_DURATION_MINUTES * 60, wpmResult);
   showErrorsCounter(errorsResult);
+
+  finishSoundPlay();
 }
 
-const modalMainButton = document.querySelector(".modal-button-main");
-const modalRetryButton = document.querySelector(".modal-button-retry");
+// ! Utils
 
-modalMainButton.addEventListener("click", function (e) {
-  window.open("../../pages/main/main.html", "_self");
-});
+function roundTo2Decimals(number) {
+  return Math.round(number * 100) / 100;
+}
 
-modalRetryButton.addEventListener("click", function (e) {
-  location.reload();
-});
+// ! back/reload buttons
+window.onbeforeunload = function (e) {
+  if (testState == "testOngoing") {
+    e.returnValue = "Your test is sill on!";
+  }
+};
+
+// ! audio
+
+const typeSound = new Audio();
+typeSound.src = "../../assets/audio/type-sound.mp3";
+typeSound.volume = 0.1;
+
+const finishSound = new Audio();
+finishSound.src = "../../assets/audio/finish-sound.mp3";
+finishSound.volume = 0.1;
+
+function soundInit() {
+  typeSound.play();
+  typeSound.pause();
+  finishSound.play();
+  finishSound.pause();
+}
+
+function typeSoundPlay() {
+  typeSound.currentTime = 0;
+  typeSound.play();
+}
+
+function finishSoundPlay() {
+  finishSound.currentTime = 0;
+  finishSound.play();
+}

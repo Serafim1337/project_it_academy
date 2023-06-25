@@ -114,10 +114,22 @@ a {
   font-family: exo-med;
   background-color: yellow;
   width: 0.9em;
-  text-align: center; }
+  text-align: center;
+  position: relative; }
 
 .character[data-order="current"] {
   background-color: #5656e1; }
+  .character[data-order="current"]::after {
+    position: absolute;
+    content: "";
+    height: 4px;
+    bottom: -6px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: 0.8em;
+    background: #fe9013;
+    animation: blink 0.5s ease-in-out infinite; }
 
 @keyframes blink {
   0% {
@@ -142,7 +154,7 @@ a {
 .wpm,
 .errors {
   background-color: #fff7d4;
-  width: 150px;
+  width: 180px;
   padding: 10px;
   font-size: 20px;
   font-family: exo-med;

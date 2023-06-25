@@ -44,19 +44,29 @@ setInterval(function () {
 
 //! block desc
 const menuContainer = document.querySelector(".menu-container");
+const wordsContainer = document.querySelector(".words-container");
 const wordsBlock = document.querySelector(".words-block");
+const pageContainer = document.querySelector(".page-container");
 const pageBlock = document.querySelector(".page-block");
 
-wordsBlock.addEventListener("click", openTestPageHandler);
-pageBlock.addEventListener("click", openTestPageHandler);
+wordsContainer.addEventListener("click", openTestPageHandler);
+pageContainer.addEventListener("click", openTestPageHandler);
 
 function openTestPageHandler(e) {
+  console.log(e.target);
+  console.log(e.currentTarget);
+  let currentElem;
   if (localStorage.typeTestConfig) {
     typeTestConfig = JSON.parse(localStorage.typeTestConfig);
   }
-  typeTestConfig.timer = e.currentTarget.dataset.timer;
+  if (e.target.hasAttribute("data-timer")) {
+    currentElem = e.target;
+  } else {
+    currentElem = e.target.parentElement;
+  }
+  typeTestConfig.timer = currentElem.dataset.timer;
   localStorage.typeTestConfig = JSON.stringify(typeTestConfig);
-  switch (e.currentTarget.dataset.testType) {
+  switch (currentElem.dataset.testType) {
     case "word":
       window.open("../word/word.html", "_self");
       break;
@@ -66,25 +76,49 @@ function openTestPageHandler(e) {
   }
 }
 
-const wordsDesc = document.createElement("div");
-wordsDesc.classList.add("block-description");
-wordsDesc.style.width = wordsBlock.offsetWidth + "px";
-wordsDesc.style.height = wordsBlock.offsetHeight + "px";
-wordsDesc.style.top = wordsBlock.offsetTop + "px";
-wordsDesc.style.left = wordsBlock.offsetLeft + "px";
+for (let i = 1; i <= 2; i++) {
+  const wordsDesc = document.createElement("div");
+  wordsDesc.classList.add("block-description");
+  wordsDesc.style.width = wordsBlock.offsetWidth + "px";
+  wordsDesc.style.height = wordsBlock.offsetHeight + "px";
+  wordsDesc.style.top = 0 + "px";
+  wordsDesc.style.left = 0 + "px";
+  wordsDesc.dataset.testType = "word";
+  wordsDesc.dataset.timer = 60 * (i + 1);
+  wordsDesc.textContent = `${i + 1} minutes`;
 
-menuContainer.append(wordsDesc);
+  wordsContainer.append(wordsDesc);
 
-wordsBlock.addEventListener("mouseenter", blockDescOpen);
-wordsBlock.addEventListener("mouseleave", blockDescClose);
+  wordsContainer.addEventListener("mouseenter", function (e) {
+    wordsDesc.style.top = wordsDesc.offsetHeight * i + "px";
+  });
+  wordsContainer.addEventListener("mouseleave", function (e) {
+    wordsDesc.style.top = 0 + "px";
+  });
 
-function blockDescOpen(e) {
-  wordsDesc.style.top = wordsBlock.offsetTop + wordsDesc.offsetHeight + "px";
+  const pageDesc = document.createElement("div");
+  pageDesc.classList.add("block-description");
+  pageDesc.style.width = wordsBlock.offsetWidth + "px";
+  pageDesc.style.height = wordsBlock.offsetHeight + "px";
+  pageDesc.style.top = 0 + "px";
+  pageDesc.style.left = 0 + "px";
+  pageDesc.dataset.testType = "text";
+  pageDesc.dataset.timer = 60 * (i + 1);
+  pageDesc.textContent = `${i + 1} minutes`;
+
+  pageContainer.append(pageDesc);
+
+  pageContainer.addEventListener("mouseenter", function (e) {
+    pageDesc.style.top = pageDesc.offsetHeight * i + "px";
+  });
+  pageContainer.addEventListener("mouseleave", function (e) {
+    pageDesc.style.top = 0 + "px";
+  });
 }
 
-function blockDescClose(e) {
-  wordsDesc.style.top = wordsBlock.offsetTop + "px";
-}
+function blockDescOpen(e) {}
+
+function blockDescClose(e) {}
 
 //! records
 
@@ -139,6 +173,8 @@ function getRecords() {
     let tr = document.createElement("tr");
     let tdName = document.createElement("td");
     tdName.textContent = record.name;
+    let tdType = document.createElement("td");
+    tdType.textContent = record.type;
     let tdTime = document.createElement("td");
     tdTime.textContent = record.time;
     let tdCpm = document.createElement("td");
@@ -147,7 +183,7 @@ function getRecords() {
     tdWpm.textContent = record.wpm;
     let tdErr = document.createElement("td");
     tdErr.textContent = record.errors;
-    tr.append(tdName, tdTime, tdCpm, tdWpm, tdErr);
+    tr.append(tdName, tdType, tdTime, tdCpm, tdWpm, tdErr);
     tBody.append(tr);
   }
 }

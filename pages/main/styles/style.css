@@ -120,24 +120,39 @@ a {
   justify-content: space-around;
   align-items: center; }
 
+.words-container,
+.page-container {
+  position: relative; }
+
 .words-block,
 .page-block {
   background-color: #FFD95A;
   border-radius: 30px;
-  height: fit-content;
-  padding: 30px;
+  height: 85px;
+  padding-top: 25px;
   position: relative;
   z-index: 1;
   width: 300px;
   text-align: center;
-  cursor: pointer; }
+  cursor: pointer;
+  box-sizing: border-box; }
+  .words-block p,
+  .page-block p {
+    margin: 0;
+    font-family: exo-thin; }
 
 .block-description {
   background-color: #FFF7D4;
   opacity: 0.5;
   position: absolute;
   border-radius: 30px;
-  transition: top 0.5s ease-in-out; }
+  transition: top 0.5s ease-in-out;
+  cursor: pointer;
+  text-align: center;
+  font-family: exo-reg;
+  font-size: 20px;
+  padding-top: 25px;
+  box-sizing: border-box; }
 
 .records-overlay {
   position: absolute;
@@ -258,7 +273,7 @@ table {
 
 th {
   padding: 20px 15px;
-  text-align: left;
+  text-align: center;
   font-weight: 500;
   font-size: 16px;
   color: #fff;
@@ -266,7 +281,7 @@ th {
 
 td {
   padding: 15px;
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
   font-weight: 300;
   font-size: 14px;

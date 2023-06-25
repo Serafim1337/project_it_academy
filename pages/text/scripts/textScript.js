@@ -16,7 +16,7 @@ async function getApiText(numberOfParagraphs, numberOfSentences) {
   }
 }
 
-let mockText = `<p>The. Test.</p>
+let mockText = `<p>The. Test test, test, test.</p>
 
   <p>The first scalelike crook is, in its own way, a gorilla. The fratchy planet reveals itself as a leisure example to those who look. A paling indonesia without vibraphones is truly a paul of staple cabinets. As far as we can estimate, they were lost without the wasted tenor that composed their coil.</p>
   
@@ -47,34 +47,42 @@ const NUMBER_OF_SENTENCES = 2;
 function createTypeText() {
   const textBlock = document.querySelector(".text-block");
   const string = document.getElementsByClassName("string")[0];
-  string.innerHTML = mockText;
   switch (testState) {
     case "beforeStart":
-      for (let paragraph of string.children) {
-        const paragraphContent = paragraph.textContent.split("");
-        paragraph.innerHTML = "";
-        paragraph.dataset.order = "nextParagraph";
-        for (let char of paragraphContent) {
-          // console.log(char);
-          const charSpan = document.createElement("span");
-          charSpan.classList.add("character");
-          charSpan.dataset.order = "nextChar";
-          charSpan.textContent = char;
-          paragraph.append(charSpan);
+      getApiText(NUMBER_OF_PARAGRAPHS, NUMBER_OF_SENTENCES).then((data) => {
+        string.innerHTML = data;
+        for (let paragraph of string.children) {
+          const paragraphContent = paragraph.textContent.split("");
+          paragraph.innerHTML = "";
+          paragraph.dataset.order = "nextParagraph";
+          for (let char of paragraphContent) {
+            const charSpan = document.createElement("span");
+            charSpan.classList.add("character");
+            charSpan.dataset.order = "nextChar";
+            charSpan.textContent = char;
+            paragraph.append(charSpan);
+          }
         }
-      }
 
-      const currentParagraph = string.firstElementChild;
-      currentParagraph.dataset.order = "currentParagraph";
-      const currentChar = currentParagraph.firstElementChild;
-      currentChar.dataset.order = "currentChar";
+        const currentParagraph = string.firstElementChild;
+        currentParagraph.dataset.order = "currentParagraph";
+        const currentChar = currentParagraph.firstElementChild;
+        currentChar.dataset.order = "currentChar";
 
-      string.style.top =
-        textBlock.offsetHeight / 2 - currentChar.offsetHeight + "px";
-      string.style.visibility = "visible";
+        string.style.top =
+          textBlock.offsetHeight / 2 - currentChar.offsetHeight + "px";
+        string.style.visibility = "visible";
+      });
 
       break;
     case "testOngoing":
+      getApiText(NUMBER_OF_PARAGRAPHS, NUMBER_OF_SENTENCES).then((data) => {
+        string.insertAdjacentHTML("beforeend", data);
+      });
+      for (let paragraph of string.children) {
+        if (!paragraph.hasAttribute(order)) {
+        }
+      }
   }
 }
 
@@ -90,21 +98,25 @@ const stats = {
   _errorsCounter: 0,
 
   get charCounter() {
-    return this._charCounter;
+    return Math.round((this._charCounter / TIMER_DURATION_MINUTES) * 100) / 100;
   },
   set charCounter(value) {
     this._charCounter = value;
     showCharCounter(cpmField);
   },
   get wordsCounter() {
-    return this._wordsCounter;
+    return (
+      Math.round((this._wordsCounter / TIMER_DURATION_MINUTES) * 100) / 100
+    );
   },
   set wordsCounter(value) {
     this._wordsCounter = value;
     showWordsCounter(wpmField);
   },
   get errorsCounter() {
-    return this._errorsCounter;
+    return (
+      Math.round((this._errorsCounter / TIMER_DURATION_MINUTES) * 100) / 100
+    );
   },
   set errorsCounter(value) {
     this._errorsCounter = value;
@@ -130,13 +142,16 @@ function showErrorsCounter(field) {
 
 // ! type logics
 
+const minutesField = document.querySelector(".minutes");
+const secondsField = document.querySelector(".seconds");
+
 document.addEventListener("keydown", typeHandler);
 
 function typeHandler(e) {
   e.preventDefault();
   switch (testState) {
     case "beforeStart":
-      // console.log("key", e.key);
+      startTimer(typeTestConfig.timer, minutesField, secondsField);
       if (e.key !== "Shift") {
         checkChar(e.key);
       }
@@ -169,9 +184,18 @@ function checkChar(char) {
       ++stats.charCounter;
     }
 
+    if (currentChar.textContent === ".") {
+      ++stats.wordsCounter;
+    }
+
+    if (currentChar.textContent === ",") {
+      ++stats.wordsCounter;
+    }
+
     if (
-      currentChar.textContent === " "
-      // todo
+      currentChar.textContent === " " &&
+      currentChar.previousElementSibling.textContent != "." &&
+      currentChar.previousElementSibling.textContent != ","
     ) {
       ++stats.wordsCounter;
     }
@@ -200,3 +224,88 @@ function checkEndOfLine(string, prev, curr) {
     string.style.top = string.offsetTop - curr.offsetHeight + "px";
   }
 }
+
+function startTimer(duration, minutesDisplay, secondsDisplay) {
+  let start = Date.now(),
+    diff,
+    minutes,
+    seconds;
+  let ticksCounter = 0;
+
+  function timer() {
+    diff = duration - (((Date.now() - start) / 1000) | 0);
+
+    minutes = (diff / 60) | 0;
+    seconds = diff % 60 | 0;
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    minutesDisplay.textContent = minutes;
+    secondsDisplay.textContent = seconds;
+
+    ticksCounter++;
+  }
+
+  timer();
+  let interval = setInterval(() => {
+    timer();
+    if (ticksCounter > duration) {
+      clearInterval(interval);
+      setTimeout(endOfTestHandler, 0);
+    }
+  }, 1000);
+}
+
+function endOfTestHandler() {
+  testState = "testFinished";
+  document.removeEventListener("keypress", typeHandler);
+  saveResults();
+  openFinishModal();
+}
+
+function saveResults() {
+  let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
+  const currentResults = {
+    type: "Page",
+    time: TIMER_DURATION_MINUTES,
+    cpm: stats.charCounter,
+    wpm: stats.wordsCounter,
+    errors: stats.errorsCounter,
+  };
+  typeTestConfig.records.push(currentResults);
+  localStorage.typeTestConfig = JSON.stringify(typeTestConfig);
+}
+
+function openFinishModal() {
+  document.body.classList.toggle("body-lock");
+  const modalOverlay = document.querySelector(".overlay");
+  modalOverlay.style.display = "flex";
+
+  const modal = document.querySelector(".modal-finish");
+
+  const testContent = document.querySelector(".test-content");
+  const testString = document.querySelector(".string");
+  testContent.append(testString);
+
+  const testDuration = modal.querySelector(".timer-data");
+  const cpmResult = modal.querySelector(".cpm-data");
+  const wpmResult = modal.querySelector(".wpm-data");
+  const errorsResult = modal.querySelector(".errors-data");
+
+  testDuration.textContent = `${TIMER_DURATION_MINUTES} min`;
+  showCharCounter(cpmResult);
+  showWordsCounter(wpmResult);
+  showErrorsCounter(errorsResult);
+}
+
+const modalMainButton = document.querySelector(".modal-button-main");
+const modalRetryButton = document.querySelector(".modal-button-retry");
+
+modalMainButton.addEventListener("click", function (e) {
+  window.open("../../pages/main/main.html", "_self");
+});
+
+modalRetryButton.addEventListener("click", function (e) {
+  location.reload();
+});
