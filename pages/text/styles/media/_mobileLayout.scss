@@ -1,3 +1,9 @@
+@media (max-width: 1200px) {
+  .type-container {
+    // height: auto;
+    // gap: 100px;
+  }
+}
 @media (max-width: 1000px) {
   .stats-block {
     width: fit-content;
@@ -6,5 +12,30 @@
   }
   .test-input {
     display: block;
+  }
+}
+
+@media (max-width: 800px) {
+  .type-container {
+    padding: 15px;
+  }
+  .text-block {
+    border-radius: 30px;
+  }
+}
+
+@media (max-width: 570px) {
+  h1 {
+    font-size: 30px;
+  }
+
+  .logo-block {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  h1 {
+    font-size: 20px;
   }
 }

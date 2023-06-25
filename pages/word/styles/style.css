@@ -201,7 +201,8 @@ a {
   padding: 10px;
   font-size: 20px;
   font-family: exo-med;
-  text-align: center; }
+  text-align: center;
+  text-wrap: nowrap; }
 
 .test-input {
   position: absolute;

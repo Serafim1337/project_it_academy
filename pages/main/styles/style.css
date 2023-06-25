@@ -314,7 +314,10 @@ td {
     display: none; }
 
   .mobile-info {
-    display: block; } }
+    display: block; }
+
+  .menu-section {
+    padding-top: 23vh; } }
 @media (max-width: 640px) {
   h1 {
     font-size: 30px;
