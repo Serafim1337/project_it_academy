@@ -75,11 +75,21 @@ function createTypeText() {
     case "testOngoing":
       getApiText(NUMBER_OF_PARAGRAPHS, NUMBER_OF_SENTENCES).then((data) => {
         string.insertAdjacentHTML("beforeend", data);
-      });
-      for (let paragraph of string.children) {
-        if (!paragraph.hasAttribute(order)) {
+        for (let paragraph of string.children) {
+          if (!paragraph.hasAttribute("data-order")) {
+            const paragraphContent = paragraph.textContent.split("");
+            paragraph.innerHTML = "";
+            paragraph.dataset.order = "nextParagraph";
+            for (let char of paragraphContent) {
+              const charSpan = document.createElement("span");
+              charSpan.classList.add("character");
+              charSpan.dataset.order = "nextChar";
+              charSpan.textContent = char;
+              paragraph.append(charSpan);
+            }
+          }
         }
-      }
+      });
   }
 }
 
@@ -174,6 +184,9 @@ function checkChar(char) {
       currentChar.previousElementSibling.textContent != ","
     ) {
       ++stats.wordsCounter;
+      if (stats.wordsCounter % 10 === 0) {
+        createTypeText();
+      }
     }
 
     currentChar.dataset.order = "prevChar";

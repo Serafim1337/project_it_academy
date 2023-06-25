@@ -106,7 +106,7 @@ function createTypeWords() {
       });
       break;
     case "testOngoing":
-      console.log(addWordsToString(string));
+      addWordsToString(string);
       break;
   }
 }
