@@ -42,6 +42,34 @@ setInterval(function () {
   randLetters();
 }, 200);
 
+// ! gesture
+
+document.addEventListener(
+  "touchstart",
+  function (event) {
+    touchstartX = event.changedTouches[0].screenX;
+    touchstartY = event.changedTouches[0].screenY;
+  },
+  false
+);
+
+document.addEventListener(
+  "touchend",
+  function (event) {
+    touchendX = event.changedTouches[0].screenX;
+    touchendY = event.changedTouches[0].screenY;
+    handleGesture();
+  },
+  false
+);
+
+function handleGesture() {
+  if (touchendX + 100 < touchstartX) {
+    // console.log("Swiped Left");
+    recordsLinkHandler();
+  }
+}
+
 //! block desc
 const menuContainer = document.querySelector(".menu-container");
 const wordsContainer = document.querySelector(".words-container");
@@ -52,9 +80,14 @@ const pageBlock = document.querySelector(".page-block");
 wordsContainer.addEventListener("click", openTestPageHandler);
 pageContainer.addEventListener("click", openTestPageHandler);
 
+let touchCounter = 0;
+
 function openTestPageHandler(e) {
-  console.log(e.target);
-  console.log(e.currentTarget);
+  if (isTouchDevice() && touchCounter < 1) {
+    touchCounter++;
+    return;
+  }
+  touchCounter = 0;
   let currentElem;
   if (localStorage.typeTestConfig) {
     typeTestConfig = JSON.parse(localStorage.typeTestConfig);
@@ -186,4 +219,14 @@ function getRecords() {
     tr.append(tdName, tdType, tdTime, tdCpm, tdWpm, tdErr);
     tBody.append(tr);
   }
+}
+
+// !utils
+
+function isTouchDevice() {
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
+  );
 }

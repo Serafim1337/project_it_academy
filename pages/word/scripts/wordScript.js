@@ -264,6 +264,8 @@ window.onbeforeunload = function (e) {
 
 // ! audio
 
+let isAudioMuted = true;
+
 const typeSound = new Audio();
 typeSound.src = "../../assets/audio/type-sound.mp3";
 typeSound.volume = 0.1;
@@ -280,11 +282,24 @@ function soundInit() {
 }
 
 function typeSoundPlay() {
-  typeSound.currentTime = 0;
-  typeSound.play();
+  if (!isAudioMuted) {
+    typeSound.currentTime = 0;
+    typeSound.play();
+  }
 }
 
 function finishSoundPlay() {
-  finishSound.currentTime = 0;
-  finishSound.play();
+  if (!isAudioMuted) {
+    finishSound.currentTime = 0;
+    finishSound.play();
+  }
 }
+
+// ! mute button
+
+document.querySelector(".speaker").onclick = function (e) {
+  e.preventDefault();
+
+  e.currentTarget.classList.toggle("mute");
+  isAudioMuted = !isAudioMuted;
+};

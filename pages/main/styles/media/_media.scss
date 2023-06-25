@@ -1,0 +1,26 @@
+@media (max-width: 800px) {
+}
+@media (max-width: 725px) {
+  .header {
+    position: absolute;
+  }
+  .menu-container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-block {
+    display: none;
+  }
+  .mobile-info {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 30px;
+    text-align: center;
+  }
+}
