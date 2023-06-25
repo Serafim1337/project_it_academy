@@ -1,15 +1,15 @@
 @font-face {
   font-family: exo-thin;
-  src: url(/assets/fonts/Exo_2/static/Exo2-Thin.ttf); }
+  src: url(/assets/fonts/Poppins/Poppins-Thin.ttf); }
 @font-face {
   font-family: exo-reg;
-  src: url(/assets/fonts/Exo_2/static/Exo2-Regular.ttf); }
+  src: url(/assets/fonts/Poppins/Poppins-Regular.ttf); }
 @font-face {
   font-family: exo-med;
-  src: url(/assets/fonts/Exo_2/static/Exo2-Medium.ttf); }
+  src: url(/assets/fonts/Poppins/Poppins-Medium.ttf); }
 @font-face {
   font-family: exo-bold;
-  src: url(/assets/fonts/Exo_2/static/Exo2-Bold.ttf); }
+  src: url(/assets/fonts/Poppins/Poppins-Bold.ttf); }
 html,
 body {
   margin: 0;
@@ -179,7 +179,7 @@ a {
   padding: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; }
+  justify-content: space-around; }
 
 .records-title {
   text-align: center; }
