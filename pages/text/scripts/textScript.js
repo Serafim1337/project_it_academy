@@ -16,15 +16,13 @@ async function getApiText(numberOfParagraphs, numberOfSentences) {
   }
 }
 
-let mockText = `<p>The. Test test, test, test.</p>
-
-  <p>The first scalelike crook is, in its own way, a gorilla. The fratchy planet reveals itself as a leisure example to those who look. A paling indonesia without vibraphones is truly a paul of staple cabinets. As far as we can estimate, they were lost without the wasted tenor that composed their coil.</p>
-  
-  <p>Their connection was, in this moment, a closer year. The gaited botany reveals itself as a regent suede to those who look. Recent controversy aside, a sound is an inmost open. They were lost without the immersed oxygen that composed their helmet.</p>
-  
-  <p>Unfortunately, that is wrong; on the contrary, few can name a shickered woolen that isn't a comfy swallow. Extending this logic, the friction of a note becomes a freckly bridge. A lion is a dying minute. This could be, or perhaps a raincoat can hardly be considered a dormy vault without also being a biology.</p>
-  
-  <p>The foggy rest comes from an unchecked preface. Before oranges, bells were only hells. Some sixfold Sundaies are thought of simply as talks. The numbing business reveals itself as a logy grass to those who look.</p>`;
+const cpmField = document.querySelector(".cpm-data");
+const wpmField = document.querySelector(".wpm-data");
+const errorsField = document.querySelector(".errors-data");
+const minutesField = document.querySelector(".minutes");
+const secondsField = document.querySelector(".seconds");
+const modalMainButton = document.querySelector(".modal-button-main");
+const modalRetryButton = document.querySelector(".modal-button-retry");
 
 // ! state
 let testState = "beforeStart";
@@ -35,7 +33,6 @@ let testState = "beforeStart";
 // ! local storage
 
 let typeTestConfig = JSON.parse(localStorage.typeTestConfig);
-
 const TIMER_DURATION_MINUTES = typeTestConfig.timer / 60;
 
 // ! configs
@@ -86,37 +83,13 @@ function createTypeText() {
   }
 }
 
-createTypeText();
-
-const cpmField = document.querySelector(".cpm-data");
-const wpmField = document.querySelector(".wpm-data");
-const errorsField = document.querySelector(".errors-data");
-
 const stats = {
-  _charCounter: 0,
-  _wordsCounter: 0,
+  charCounter: 0,
+  wordsCounter: 0,
   _errorsCounter: 0,
 
-  get charCounter() {
-    return Math.round((this._charCounter / TIMER_DURATION_MINUTES) * 100) / 100;
-  },
-  set charCounter(value) {
-    this._charCounter = value;
-    showCharCounter(cpmField);
-  },
-  get wordsCounter() {
-    return (
-      Math.round((this._wordsCounter / TIMER_DURATION_MINUTES) * 100) / 100
-    );
-  },
-  set wordsCounter(value) {
-    this._wordsCounter = value;
-    showWordsCounter(wpmField);
-  },
   get errorsCounter() {
-    return (
-      Math.round((this._errorsCounter / TIMER_DURATION_MINUTES) * 100) / 100
-    );
+    return this._errorsCounter;
   },
   set errorsCounter(value) {
     this._errorsCounter = value;
@@ -124,28 +97,31 @@ const stats = {
   },
 };
 
-function showCharCounter(field) {
-  let cpmValue =
-    Math.round((stats.charCounter / TIMER_DURATION_MINUTES) * 100) / 100;
-  field.textContent = cpmValue;
+document.addEventListener("keydown", typeHandler);
+modalMainButton.addEventListener("click", function (e) {
+  window.open("../../pages/main/main.html", "_self");
+});
+modalRetryButton.addEventListener("click", function (e) {
+  location.reload();
+});
+
+createTypeText();
+
+function showCPMCounter(secFromStart, field) {
+  const minFromStart = (secFromStart / 60) | 0;
+  field.textContent = roundTo2Decimals(stats.charCounter / (minFromStart + 1));
 }
 
-function showWordsCounter(field) {
-  let wpmValue =
-    Math.round((stats.wordsCounter / TIMER_DURATION_MINUTES) * 100) / 100;
-  field.textContent = wpmValue;
+function showWPMCounter(secFromStart, field) {
+  const minFromStart = (secFromStart / 60) | 0;
+  field.textContent = roundTo2Decimals(stats.wordsCounter / (minFromStart + 1));
 }
 
 function showErrorsCounter(field) {
-  field.textContent = stats.errorsCounter;
+  field.textContent = stats.errorsCounter > 99 ? "99+" : stats.errorsCounter;
 }
 
 // ! type logics
-
-const minutesField = document.querySelector(".minutes");
-const secondsField = document.querySelector(".seconds");
-
-document.addEventListener("keydown", typeHandler);
 
 function typeHandler(e) {
   e.preventDefault();
@@ -155,17 +131,18 @@ function typeHandler(e) {
       if (e.key !== "Shift") {
         checkChar(e.key);
       }
-
+      soundInit();
+      typeSoundPlay();
       testState = "testOngoing";
       break;
     case "testOngoing":
-      // console.log("key", e.key);
       if (e.key !== "Shift") {
         checkChar(e.key);
       }
+      typeSoundPlay();
       break;
     case "testFinished":
-      // todo
+      //handled in function
       break;
   }
 }
@@ -176,7 +153,6 @@ function checkChar(char) {
     '[data-order="currentParagraph"]'
   );
   let currentChar = document.querySelector('[data-order="currentChar"]');
-  console.log(char);
 
   if (char === currentChar.textContent) {
     if (!currentChar.dataset.state) {
@@ -233,10 +209,14 @@ function startTimer(duration, minutesDisplay, secondsDisplay) {
   let ticksCounter = 0;
 
   function timer() {
-    diff = duration - (((Date.now() - start) / 1000) | 0);
+    const secFromStart = ((Date.now() - start) / 1000) | 0;
+    diff = duration - secFromStart;
 
     minutes = (diff / 60) | 0;
     seconds = diff % 60 | 0;
+
+    showCPMCounter(secFromStart, cpmField);
+    showWPMCounter(secFromStart, wpmField);
 
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -294,18 +274,64 @@ function openFinishModal() {
   const errorsResult = modal.querySelector(".errors-data");
 
   testDuration.textContent = `${TIMER_DURATION_MINUTES} min`;
-  showCharCounter(cpmResult);
-  showWordsCounter(wpmResult);
+  showCPMCounter(TIMER_DURATION_MINUTES * 60, cpmResult);
+  showWPMCounter(TIMER_DURATION_MINUTES * 60, wpmResult);
   showErrorsCounter(errorsResult);
+
+  finishSoundPlay();
 }
 
-const modalMainButton = document.querySelector(".modal-button-main");
-const modalRetryButton = document.querySelector(".modal-button-retry");
+// ! Utils
 
-modalMainButton.addEventListener("click", function (e) {
-  window.open("../../pages/main/main.html", "_self");
-});
+function roundTo2Decimals(number) {
+  return Math.round(number * 100) / 100;
+}
 
-modalRetryButton.addEventListener("click", function (e) {
-  location.reload();
-});
+// ! back/reload buttons
+window.onbeforeunload = function (e) {
+  if (testState == "testOngoing") {
+    e.returnValue = "Your test is sill on!";
+  }
+};
+
+// ! audio
+
+let isAudioMuted = true;
+
+const typeSound = new Audio();
+typeSound.src = "../../assets/audio/type-sound.mp3";
+typeSound.volume = 0.1;
+
+const finishSound = new Audio();
+finishSound.src = "../../assets/audio/finish-sound.mp3";
+finishSound.volume = 0.1;
+
+function soundInit() {
+  typeSound.play();
+  typeSound.pause();
+  finishSound.play();
+  finishSound.pause();
+}
+
+function typeSoundPlay() {
+  if (!isAudioMuted) {
+    typeSound.currentTime = 0;
+    typeSound.play();
+  }
+}
+
+function finishSoundPlay() {
+  if (!isAudioMuted) {
+    finishSound.currentTime = 0;
+    finishSound.play();
+  }
+}
+
+// ! mute button
+
+document.querySelector(".speaker").onclick = function (e) {
+  e.preventDefault();
+
+  e.currentTarget.classList.toggle("mute");
+  isAudioMuted = !isAudioMuted;
+};

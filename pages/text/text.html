@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,
+    maximum-scale=1.0, user-scalable=0"
+    />
     <title>Type text</title>
     <link rel="stylesheet" href="../text/styles/style.css" />
     <link rel="icon" href="../../assets/icons/logo.svg" />
@@ -23,9 +27,11 @@
         </a>
         <nav class="nav-block">
           <ul class="nav-list">
-            <li class="nav-item"><a href="#" class="nav-link">Link 1</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Link 2</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Link 3</a></li>
+            <li class="nav-item">
+              <a href="#" class="nav-link speaker mute"><span></span></a>
+            </li>
+            <!-- <li class="nav-item"><a href="#" class="nav-link">Link 2</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Link 3</a></li> -->
           </ul>
         </nav>
       </div>
@@ -34,18 +40,18 @@
       <section class="type-section container">
         <div class="type-container">
           <div class="text-block">
-            <input class="test-input" />
-            <div class="string"></div>
+            <!-- <input class="test-input" /> -->
+            <div class="string" contenteditable="true"></div>
           </div>
 
           <div class="stats-block">
             <div class="timer">
               <span class="minutes">__</span>:<span class="seconds">__</span>
             </div>
-            <div class="cpm">CPM: <span class="cpm-data">__</span></div>
-            <div class="wpm">WPM: <span class="wpm-data">__</span></div>
+            <div class="cpm">CPM: <span class="cpm-data">0</span></div>
+            <div class="wpm">WPM: <span class="wpm-data">0</span></div>
             <div class="errors">
-              Missclicks: <span class="errors-data">__</span>
+              Missclicks: <span class="errors-data">0</span>
             </div>
           </div>
         </div>
@@ -62,10 +68,10 @@
               <div class="timer">
                 Test duration: <span class="timer-data">__</span>
               </div>
-              <div class="cpm">CPM: <span class="cpm-data">__</span></div>
-              <div class="wpm">WPM: <span class="wpm-data">__</span></div>
+              <div class="cpm">CPM: <span class="cpm-data">0</span></div>
+              <div class="wpm">WPM: <span class="wpm-data">0</span></div>
               <div class="errors">
-                Missclicks: <span class="errors-data">__</span>
+                Missclicks: <span class="errors-data">0</span>
               </div>
             </div>
           </div>
